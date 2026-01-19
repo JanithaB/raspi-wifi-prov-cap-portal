@@ -12,6 +12,7 @@ sudo cp "$PROJECT_ROOT/scripts/wifi-connection-monitor.sh" /usr/local/bin/
 sudo cp "$PROJECT_ROOT/scripts/wifi-reconnect-on-boot.sh" /usr/local/bin/
 sudo cp "$PROJECT_ROOT/scripts/switch-to-ap-mode.sh" /usr/local/bin/
 sudo cp "$PROJECT_ROOT/scripts/verify-wifi-config.sh" /usr/local/bin/
+sudo cp "$PROJECT_ROOT/scripts/check-services.sh" /usr/local/bin/
 
 # Make scripts executable
 sudo chmod +x /usr/local/bin/switch-to-wifi-client.sh
@@ -19,6 +20,7 @@ sudo chmod +x /usr/local/bin/wifi-connection-monitor.sh
 sudo chmod +x /usr/local/bin/wifi-reconnect-on-boot.sh
 sudo chmod +x /usr/local/bin/switch-to-ap-mode.sh
 sudo chmod +x /usr/local/bin/verify-wifi-config.sh
+sudo chmod +x /usr/local/bin/check-services.sh
 
 # Create directory for WiFi credentials
 sudo mkdir -p /etc/raspi-captive-portal
@@ -27,11 +29,24 @@ sudo mkdir -p /etc/raspi-captive-portal
 sudo cp "$SCRIPT_DIR/wifi-connection-monitor.service" /etc/systemd/system/
 sudo cp "$SCRIPT_DIR/wifi-reconnect-on-boot.service" /etc/systemd/system/
 
+# Reload systemd to recognize new services
+sudo systemctl daemon-reload
+
 # Enable WiFi reconnect on boot service
+echo "Enabling wifi-reconnect-on-boot.service..."
 sudo systemctl enable wifi-reconnect-on-boot.service
 
-# Reload systemd
-sudo systemctl daemon-reload
+# Verify the service is enabled
+if systemctl is-enabled wifi-reconnect-on-boot.service &> /dev/null; then
+    echo "✓ wifi-reconnect-on-boot.service is enabled"
+else
+    echo "✗ WARNING: Failed to enable wifi-reconnect-on-boot.service"
+fi
+
+# Show service status
+echo ""
+echo "Service status:"
+systemctl status wifi-reconnect-on-boot.service --no-pager || true
 
 # Setup sudoers file for passwordless WiFi script execution
 echo "Setting up sudoers configuration for WiFi scripts..."
