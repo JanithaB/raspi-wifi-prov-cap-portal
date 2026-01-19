@@ -31,4 +31,26 @@ sudo systemctl enable wifi-reconnect-on-boot.service
 # Reload systemd
 sudo systemctl daemon-reload
 
+# Setup sudoers file for passwordless WiFi script execution
+echo "Setting up sudoers configuration for WiFi scripts..."
+# Get the current username
+CURRENT_USER="${SUDO_USER:-$(whoami)}"
+echo "Configuring for user: $CURRENT_USER"
+
+# Create a temporary sudoers file with the correct username
+sudo sed "s/^pi /$CURRENT_USER /" "$SCRIPT_DIR/raspi-captive-portal-sudoers" | \
+    sudo tee /etc/sudoers.d/raspi-captive-portal > /dev/null
+
+# Set correct permissions (sudoers files must be 0440)
+sudo chmod 0440 /etc/sudoers.d/raspi-captive-portal
+
+# Verify the sudoers file is valid
+if sudo visudo -c -f /etc/sudoers.d/raspi-captive-portal; then
+    echo "Sudoers configuration installed successfully"
+else
+    echo "ERROR: Sudoers configuration is invalid! Removing..."
+    sudo rm /etc/sudoers.d/raspi-captive-portal
+    exit 1
+fi
+
 echo "WiFi management scripts and services installed successfully"

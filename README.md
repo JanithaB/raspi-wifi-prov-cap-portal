@@ -43,10 +43,18 @@ You probably want to use this repo in one of these ways:
 
   <sub>Note that the script needs to run as sudo user. Make sure that you agree with the commands executed beforehand by looking into the `.sh` scripts in the folder `access-point/`.</sub>
 
-  ```
+  ```bash
   git clone https://github.com/Splines/raspi-captive-portal.git
   cd ./raspi-captive-portal/
   sudo python setup.py
+  ```
+
+  **Important**: The setup script will configure passwordless sudo access for WiFi management scripts. This is required for the captive portal to switch between AP and WiFi client modes.
+
+  **Verify Installation**:
+  ```bash
+  # Run the diagnostic test
+  sudo bash scripts/test-wifi-setup.sh
   ```
 
 </details>

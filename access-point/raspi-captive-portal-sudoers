@@ -1,0 +1,14 @@
+# Sudoers file for Raspi Captive Portal
+# This allows the Node.js server to execute WiFi management scripts without password
+
+# Allow running WiFi scripts without password
+# Replace 'pi' with your actual username if different
+pi ALL=(ALL) NOPASSWD: /usr/local/bin/switch-to-wifi-client.sh
+pi ALL=(ALL) NOPASSWD: /usr/local/bin/switch-to-ap-mode.sh
+pi ALL=(ALL) NOPASSWD: /usr/local/bin/wifi-connection-monitor.sh
+pi ALL=(ALL) NOPASSWD: /usr/local/bin/wifi-reconnect-on-boot.sh
+
+# If running as a different user (e.g., for systemd service), add that user too
+# Example for a dedicated service user:
+# raspicaptive ALL=(ALL) NOPASSWD: /usr/local/bin/switch-to-wifi-client.sh
+# raspicaptive ALL=(ALL) NOPASSWD: /usr/local/bin/switch-to-ap-mode.sh
