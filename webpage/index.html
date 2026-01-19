@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WiFi Setup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            max-width: 480px;
+            width: 100%;
+            border: 1px solid #e8ecf1;
+        }
+        
+        .logo {
+            display: block;
+            margin: 0 auto 30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #1a202c;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin: 22px 0 10px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: all 0.3s;
+            color: #2d3748;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3182ce;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+            letter-spacing: 0.3px;
+        }
+        
+        #connectBtn {
+            background: #3182ce;
+            color: white;
+            margin-top: 25px;
+        }
+        
+        #connectBtn:hover:not(:disabled) {
+            background: #2c5282;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+        }
+        
+        #scanBtn {
+            background: #edf2f7;
+            color: #2d3748;
+            border: 2px solid #e2e8f0;
+        }
+        
+        #scanBtn:hover:not(:disabled) {
+            background: #e2e8f0;
+            border-color: #cbd5e0;
+        }
+        
+        button:disabled {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #3182ce;
+            margin: 15px 0;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        #status {
+            margin-top: 24px;
+            padding: 16px 18px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+            border: 2px solid transparent;
+        }
+        
+        #status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #6ee7b7;
+            display: block;
+        }
+        
+        #status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+            display: block;
+        }
+        
+        .network-count {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .network-info {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .network-open {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .network-secured {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .checkbox-container label {
+            margin: 0;
+            font-weight: normal;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        #passwordGroup {
+            transition: opacity 0.3s;
+        }
+        
+        #passwordGroup.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/logo.png" alt="Logo" class="logo">
+        <h2>WMS Gateway</h2>
+        <p class="subtitle">WiFi Configuration</p>
+        <form id="wifiForm">
+            <label>Available Networks</label>
+            <select id="ssid" name="ssid" required>
+                <option value="">Select a network...</option>
+            </select>
+            <div class="network-count" id="networkCount"></div>
+            
+            <button type="button" id="scanBtn" onclick="scanNetworks()">
+                ↻ Refresh Networks
+            </button>
+            
+            <div id="loading" class="loading" style="display:none;">
+                Scanning for networks...
+            </div>
+            
+            <div class="checkbox-container" style="display: none;">
+                <input type="checkbox" id="openNetwork" onchange="togglePasswordField()">
+                <label for="openNetwork">This is an open network (no password)</label>
+            </div>
+            
+            <div id="passwordGroup" style="display: none;">
+                <label>WiFi Password</label>
+                <input type="password" id="password" name="password" 
+                       placeholder="Enter password">
+            </div>
+            
+            <button type="submit" id="connectBtn">
+                Connect to Network
+            </button>
+        </form>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let networkSecurity = {};
+        
+        function togglePasswordField() {
+            const openNetwork = document.getElementById('openNetwork').checked;
+            const passwordGroup = document.getElementById('passwordGroup');
+            const passwordInput = document.getElementById('password');
+            
+            if (openNetwork) {
+                passwordGroup.classList.add('disabled');
+                passwordInput.removeAttribute('required');
+                passwordInput.value = '';
+            } else {
+                passwordGroup.classList.remove('disabled');
+                passwordInput.setAttribute('required', 'required');
+            }
+        }
+        
+        function scanNetworks() {
+            const loadingDiv = document.getElementById('loading');
+            const scanBtn = document.getElementById('scanBtn');
+            const ssidSelect = document.getElementById('ssid');
+            const networkCount = document.getElementById('networkCount');
+            const statusDiv = document.getElementById('status');
+            
+            loadingDiv.style.display = 'block';
+            scanBtn.disabled = true;
+            scanBtn.textContent = '⟳ Scanning...';
+            statusDiv.style.display = 'none';
+            
+            fetch('/scan')
+                .then(response => response.json())
+                .then(data => {
+                    ssidSelect.innerHTML = '<option value="">Select a network...</option>';
+                    networkSecurity = {};
+                    
+                    if (data.networks && data.networks.length > 0) {
+                        data.networks.forEach(network => {
+                            const option = document.createElement('option');
+                            option.value = network.ssid;
+                            
+                            // Store security info
+                            networkSecurity[network.ssid] = network.security;
+                            
+                            // Just show the SSID without security badge
+                            option.textContent = network.ssid;
+                            
+                            ssidSelect.appendChild(option);
+                        });
+                        networkCount.textContent = `${data.networks.length} networks found`;
+                    } else {
+                        networkCount.textContent = 'No networks found';
+                    }
+                    
+                    loadingDiv.style.display = 'none';
+                    scanBtn.disabled = false;
+                    scanBtn.textContent = '↻ Refresh Networks';
+                })
+                .catch(error => {
+                    loadingDiv.style.display = 'none';
+                    scanBtn.disabled = false;
+                    scanBtn.textContent = '🔄 Refresh Networks';
+                    statusDiv.className = 'error';
+                    statusDiv.textContent = 'Scan failed. Please try again.';
+                    statusDiv.style.display = 'block';
+                });
+        }
+        
+        // Auto-detect network security when selected
+        document.getElementById('ssid').addEventListener('change', function() {
+            const selectedSSID = this.value;
+            const openNetworkCheckbox = document.getElementById('openNetwork');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const passwordInput = document.getElementById('password');
+            
+            if (selectedSSID && networkSecurity[selectedSSID] === 'OPEN') {
+                // Open network - hide password field
+                openNetworkCheckbox.checked = true;
+                passwordGroup.style.display = 'none';
+                passwordInput.removeAttribute('required');
+                passwordInput.value = '';
+            } else if (selectedSSID) {
+                // Secured network - show password field
+                openNetworkCheckbox.checked = false;
+                passwordGroup.style.display = 'block';
+                passwordInput.setAttribute('required', 'required');
+            } else {
+                // No network selected - hide password field
+                passwordGroup.style.display = 'none';
+                passwordInput.removeAttribute('required');
+            }
+        });
+
+        document.getElementById('wifiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+            const isOpen = document.getElementById('openNetwork').checked;
+            const statusDiv = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            
+            if (!ssid) {
+                statusDiv.className = 'error';
+                statusDiv.textContent = 'Please select a network';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            if (!isOpen && !password) {
+                statusDiv.className = 'error';
+                statusDiv.textContent = 'Please enter password or check "open network"';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            connectBtn.disabled = true;
+            connectBtn.textContent = '⟳ Connecting...';
+            
+            fetch('/connect', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    ssid: ssid, 
+                    password: password || '',
+                    is_open: isOpen
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    statusDiv.className = 'success';
+                    statusDiv.textContent = data.message;
+                } else {
+                    statusDiv.className = 'error';
+                    statusDiv.textContent = data.message;
+                    connectBtn.disabled = false;
+                    connectBtn.textContent = 'Connect to Network';
+                }
+                statusDiv.style.display = 'block';
+            })
+            .catch(error => {
+                statusDiv.className = 'error';
+                statusDiv.textContent = 'Connection failed. Please try again.';
+                statusDiv.style.display = 'block';
+                connectBtn.disabled = false;
+                connectBtn.textContent = 'Connect to Network';
+            });
+        });
+
+        // Auto-scan on page load
+        window.onload = function() {
+            scanNetworks();
+        };
+    </script>
+</body>
+</html>
