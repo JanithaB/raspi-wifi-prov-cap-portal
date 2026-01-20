@@ -452,11 +452,11 @@ sudo netfilter-persistent save
 
 ### Custom Portal Domain
 
-To use a custom domain (e.g., wms.gateway):
+To use a custom domain (e.g., portal.local or setup.wifi):
 
 ```bash
 # Edit /etc/dnsmasq.conf
-address=/wms.gateway/192.168.5.1
+address=/portal.local/192.168.5.1
 
 # Restart dnsmasq
 sudo systemctl restart dnsmasq
@@ -591,4 +591,4 @@ For issues, questions, or contributions:
 
 ---
 
-**Made with ❤️ for WMS Gateway**
+**Made with ❤️ for the Raspberry Pi Community**
