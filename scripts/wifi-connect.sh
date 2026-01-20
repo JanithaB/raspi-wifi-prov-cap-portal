@@ -20,8 +20,13 @@ echo "Configuring WiFi credentials for: $SSID"
 echo "Switching to client mode..."
 /usr/local/bin/switch-to-client.sh
 
-# Wait for services to stop
-sleep 3
+# Wait for NetworkManager to be ready (switch-to-client.sh already waits internally)
+echo "Waiting for NetworkManager to scan networks..."
+sleep 5
+
+# Request a WiFi scan to ensure fresh network list
+sudo nmcli device wifi rescan 2>/dev/null || true
+sleep 2
 
 # Delete existing connection if it exists
 echo "Removing existing connection if any..."

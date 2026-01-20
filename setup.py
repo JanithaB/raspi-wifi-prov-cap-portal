@@ -35,14 +35,14 @@ def main():
     run_command("sudo systemctl disable dnsmasq")
     
     print("\n[4/7] Copying configuration files...")
-    run_command(f"sudo cp {script_dir}/scripts/hostapd.conf /etc/hostapd/hostapd.conf")
-    run_command(f"sudo cp {script_dir}/scripts/dnsmasq.conf /etc/dnsmasq.conf")
+    run_command(f"sudo cp {script_dir}/config/hostapd.conf /etc/hostapd/hostapd.conf")
+    run_command(f"sudo cp {script_dir}/config/dnsmasq.conf /etc/dnsmasq.conf")
     run_command('sudo sed -i \'s|#DAEMON_CONF=""|DAEMON_CONF="/etc/hostapd/hostapd.conf"|\' /etc/default/hostapd')
     
     print("\n[5/7] Making scripts executable...")
     run_command(f"chmod +x {script_dir}/scripts/*.sh")
     run_command(f"sudo cp {script_dir}/scripts/*.sh /usr/local/bin/")
-    run_command(f"sudo cp {script_dir}/scripts/portal_server.py /usr/local/bin/")
+    run_command(f"sudo cp {script_dir}/webpage/portal_server.py /usr/local/bin/")
     run_command(f"sudo chmod +x /usr/local/bin/*.sh")
     run_command(f"sudo chmod +x /usr/local/bin/portal_server.py")
     

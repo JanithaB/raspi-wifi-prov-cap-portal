@@ -255,15 +255,17 @@ sudo /usr/local/bin/wifi-connect.sh "NetworkName" --open
 
 ```
 raspi-captive-portal/
+├── config/
+│   ├── dnsmasq.conf            # DHCP/DNS configuration
+│   └── hostapd.conf            # Access point configuration
 ├── scripts/
-│   ├── portal_server.py        # Main web server
 │   ├── switch-to-ap.sh         # Switch to AP mode
 │   ├── switch-to-client.sh     # Switch to client mode
 │   ├── wifi-connect.sh         # Connect to WiFi
-│   ├── dnsmasq.conf            # DHCP/DNS configuration
-│   └── hostapd.conf            # Access point configuration
+│   └── wifi_setup.sh           # WiFi setup helper
 ├── webpage/
-│   └── index.html              # Captive portal webpage
+│   ├── index.html              # Captive portal webpage
+│   └── portal_server.py        # Main web server
 ├── public/
 │   └── logo.png                # Portal logo
 ├── setup.py                    # Installation script
