@@ -47,7 +47,7 @@ When you deploy this project:
 
 ```bash
 cd ~/Documents
-git clone https://github.com/JanithaB/raspi-captive-portal.git
+git clone https://github.com/JanithaB/rpi-wifi-provisioner.git
 cd raspi-captive-portal
 ```
 
