@@ -1,4 +1,4 @@
-# WMS Gateway - Raspberry Pi Captive Portal
+# PortalPi - Raspberry Pi Captive Portal
 
 A complete WiFi captive portal and access point setup for Raspberry Pi, allowing easy WiFi configuration through a web interface.
 
