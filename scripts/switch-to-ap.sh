@@ -5,6 +5,11 @@ echo "Switching to AP Mode..."
 # Stop any existing wpa_supplicant
 sudo killall wpa_supplicant 2>/dev/null
 
+# Disconnect any active NetworkManager connection on wlan0
+echo "Disconnecting NetworkManager from wlan0..."
+sudo nmcli device disconnect wlan0 2>/dev/null || true
+sleep 1
+
 # Tell NetworkManager to stop managing wlan0
 echo "Configuring NetworkManager to ignore wlan0..."
 sudo mkdir -p /etc/NetworkManager/conf.d/
@@ -15,7 +20,7 @@ EOF
 sudo systemctl reload NetworkManager
 
 # Wait for NetworkManager to release wlan0
-sleep 2
+sleep 3
 
 # Enable IP forwarding
 sudo sysctl -w net.ipv4.ip_forward=1 > /dev/null
