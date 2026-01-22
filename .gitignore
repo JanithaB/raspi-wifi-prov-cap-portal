@@ -50,3 +50,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 /tmp/
+
+# Article
+article.md
